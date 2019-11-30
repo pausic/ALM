@@ -1,6 +1,43 @@
-import pickle
+#!/usr/bin/env python
+#! -*- encoding: utf-8 -*-
+# Diego Ros , Aitana Villaplana y Pau Sanchez
+
+from operator import itemgetter
+import re
 import sys
+import random
+import pickle
+import json
+import os
 import numpy as np
+
+def save_object(object, file_name): #guardar en disco
+    with open(file_name, 'wb') as fh:
+        pickle.dump(object, fh)
+
+def load_object(file_name): #cargar de disco
+    with open(file_name, 'rb') as fh:
+        obj = pickle.load(fh)
+    return obj
+
+#clean_re = re.compile(';|\.|!|\?|\,|"|\'') #eliminar simbolos
+#def clean_text(text):
+#    return clean_re.split(text)
+
+
+clean_f = re.compile('\W+')
+def clean_frase(text):
+    return clean_f.sub(' ', text)
+
+
+def sort_dic(d): #ordenar diccionario
+    for key, value in sorted(d.items(), key=lambda a: (-a[1], a[0])):
+        yield key, value
+
+def load_json(f): #cargar json
+    with open(f) as fh:
+        obj = json.load(fh)
+    return obj
 
 def ini_distancia(p1,p2):
     #matriz de ceros
@@ -136,9 +173,9 @@ def levesteinTree_Word_PD(p,trie,tolerancia):
         matrix[cont][0] = coste
     #relleno la columna
     for cont in range(1, len(p)):
-        for cont2 in range(1, len(trie.nodes)):
+        for cont2 in range(1, len(trie.nodes)): 
 
-            nodo=trie.getNode(cont2)
+            nodo=trie.getNode(cont2) 
 
             if p[cont] != nodo.getChr() :
                 coste = 1
@@ -163,6 +200,7 @@ def levesteinTree_Word_PD(p,trie,tolerancia):
             sol.append((trie.getNode(c).getPalabra(),dis,c))
 
     return sol
+
 
 def dam_levesteinTree_Word_PD(p,trie,tolerancia):
     sol=list()
@@ -218,25 +256,37 @@ def dam_levesteinTree_Word_PD(p,trie,tolerancia):
 
 
 
-def levesteinTrie_Word_Ramificacion(p,tree,tolerancia):
+def levesteinTrie_Word_Ramificacion(p,trie,tolerancia):
     sol = list()
     fifo=list()
     fifo.append((0,0,0))
-
-    palabra = len(p)+1
+    coste = 0
+    palabra = len(p)-1
     while(len(fifo)>0):
-        letra,nodo,dis = fifo[0]
+        IndLetra,IndNodo,dis = fifo[0]
+        nodo = trie.getNode(IndNodo)
+        letra = nodo.getChr()
         fifo.pop(0)
  
         if (dis <= tolerancia):
-            if(letra == palabra and nodo.esFinal):
-                sol.append((nodo.getChar(),dis))
+            if letra == p[IndLetra]:
+                coste = 1
+            else:
+                coste = 0  
+            #add solutions 
+            if(IndLetra == palabra and nodo.esFinal):
+                sol.append((nodo.getPalabra(),dis + coste))
+            
             childs = nodo.getSons()
-            if (letra<palabra):
-               fifo.append(letra+1,nodo,dis+1)
+            #Insercion
+            if (IndLetra<palabra):
+               fifo.append((IndLetra+1,IndNodo,dis+1))
             for c in childs.keys():
-                if child[c].getChr() == p[letra]:
-                    fifo.append(letra+1,child[c],dis)
-                else:
-                    fifo.append(letra+1,child[c],dis+1)
+                #borrado
+                fifo.append((IndLetra,childs[c].getIndice(),dis+1))
+                #sustitucion
+                if (IndLetra<palabra):
+                    fifo.append((IndLetra+1,childs[c].getIndice(),dis+coste))
     return sol
+
+
