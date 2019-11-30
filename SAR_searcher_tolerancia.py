@@ -22,7 +22,6 @@ def processArgs():
         index = sys.argv[1]
         ix = load_object(index)
         stem = False
-        tolerancia = False
         num = 0
         if len(sys.argv) == 2:
             searchCmd(ix, stem)
@@ -37,15 +36,14 @@ def processArgs():
             if param[2].find("-q=") >= 0:
                 query = param[2].split("=")
                 query = query[1]
+                resolver_consultas(ix, query, stem, False, num)
                 if query.find("%") >= 0:
                     query = query.split("%")
-                    tolerancia = True
                 elif query.find("@") >= 0:
                     query = query.split("@")
-                    tolerancia = True
                 word = query[0]
                 num = query[1]    
-                resolver_consultas(ix, query, stem, tolerancia, num)
+                resolver_consultas(ix, word, stem, True, num)
             else:
                 searchCmd(ix, stem)
 
@@ -67,6 +65,12 @@ def searchCmd(ix, stem):
 
 #Stemming es un parametro booleano para determinar si esta consulta es con stemming
 def resolver_consultas(indice, consulta, stemming, tolerancia, numeroTolerancia):
+    if tolerancia == True:
+        sol = busqueda_aprox(consulta, tolerancia, indice[10])
+        print(sol)
+        print(len(sol))
+        return 0
+    
     consulta = consulta.lower()
     consulta = " ( ".join(consulta.split("("))
     consulta = " ) ".join(consulta.split(")"))
@@ -76,6 +80,7 @@ def resolver_consultas(indice, consulta, stemming, tolerancia, numeroTolerancia)
     aux=[]
 
     parentesis =False
+
 
     #Juntar palabras en array que deberian estar juntas dado un ''
     i = 0
@@ -361,8 +366,9 @@ def ordenar_relevancia(pesos, resultado, consulta):
     return (res, aux)
 """
 
-def busqueda_aprox(consulta, trie):
-    return 0
+def busqueda_aprox(query, numTolerancia, trie):
+    listaPalabras = levesteinTree_Word_PD(query, trie, numTolerancia)
+    return listaPalabras
 
 
 def mostrar_consultas(docs, lista, consulta,index,stemming):#, pesos):
