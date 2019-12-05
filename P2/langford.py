@@ -8,7 +8,7 @@ def langford_directo(N, allsolutions):
     def backtracking(num):
         if num<=0:
             yield "-".join(map(str, seq))
-        else:
+        #else:
 	    # COMPLETAR
 
     if N%4 not in (0,3):
@@ -62,8 +62,17 @@ def langford_data_structure(N):
         return sys.intern('p%d' % (i,))
 
     # COMPLETAR
+    Y= dict()
+    for v in range (1,N+1):
+        num=value(v)
+        for p in range(N*2):
+            pos=position(p)
+            if(p+v+1<N*2):
+                Y[num+pos]=(num,pos,position(p+v+1))
 
+    X = set([value(i) for i in range(1,N+1)]+[position(i) for i in range(2*N)])
     X = {j: set() for j in X}
+    
     for i in Y:
         for j in Y[i]:
             X[j].add(i)
