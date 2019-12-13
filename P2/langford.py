@@ -4,12 +4,20 @@ import sys
 def langford_directo(N, allsolutions):
     N2   = 2*N
     seq  = [0]*N2
-    
+ 
     def backtracking(num):
         if num<=0:
             yield "-".join(map(str, seq))
         #else:
 	    # COMPLETAR
+        for j in range(0,len(seq)-num-1):
+            if (seq[j] == 0 and seq[j+num+1] == 0):   
+                seq[j] = num
+                seq[j+num+1] = num
+                for s in backtracking(num-1):
+                    yield s
+                seq[j] = 0
+                seq[j+num+1] = 0
 
     if N%4 not in (0,3):
         yield "no hay solucion"
