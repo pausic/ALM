@@ -197,7 +197,7 @@ def levesteinTree_Word_PD(p,trie,tolerancia):
     for c in trie.finalList:
         dis= matrix[cont,c]
         if dis<=tolerancia:
-            sol.append((trie.getNode(c).getPalabra(),dis,c))
+            sol.append((trie.getNode(c).getPalabra(),dis))
 
     return sol
 
@@ -249,7 +249,7 @@ def dam_levesteinTree_Word_PD(p,trie,tolerancia):
     for c in trie.finalList:
         dis= matrix[cont,c]
         if dis<=tolerancia:
-            sol.append((trie.getNode(c).getPalabra(),dis,c))
+            sol.append((trie.getNode(c).getPalabra(),dis))
 
     return sol
 
@@ -257,36 +257,44 @@ def dam_levesteinTree_Word_PD(p,trie,tolerancia):
 
 
 def levesteinTrie_Word_Ramificacion(p,trie,tolerancia):
-    sol = list()
+    sol = dict()
     fifo=list()
-    fifo.append((0,0,0))
-    coste = 0
-    palabra = len(p)-1
+    fifo.append((0,0,0)) 
+    #p=" "+p
+    palabra = len(p)
     while(len(fifo)>0):
         IndLetra,IndNodo,dis = fifo[0]
         nodo = trie.getNode(IndNodo)
-        letra = nodo.getChr()
         fifo.pop(0)
- 
         if (dis <= tolerancia):
-            if letra == p[IndLetra]:
-                coste = 1
-            else:
-                coste = 0  
+            
+            
             #add solutions 
-            if(IndLetra == palabra and nodo.esFinal):
-                sol.append((nodo.getPalabra(),dis + coste))
+            if(IndLetra == palabra and nodo.esFinal() ):
+                if  nodo.getPalabra() not in sol.keys():
+                    sol[nodo.getPalabra()] = dis 
+                else:
+                    sol[nodo.getPalabra()] = min(sol[nodo.getPalabra()], dis)
+                
             
             childs = nodo.getSons()
             #Insercion
             if (IndLetra<palabra):
                fifo.append((IndLetra+1,IndNodo,dis+1))
+            
+            #print(nodo.getChr(),nodo.getDepth(),nodo.getIndice(),nodo.getPalabra()," letra :",IndLetra,palabra, " dis ",dis )
+
             for c in childs.keys():
-                #borrado
+                   
+                                   #borrado
                 fifo.append((IndLetra,childs[c].getIndice(),dis+1))
-                #sustitucion
-                if (IndLetra<palabra):
-                    fifo.append((IndLetra+1,childs[c].getIndice(),dis+coste))
+                    #sustitucion
+                if IndLetra < palabra:
+                    if childs[c].getChr() == p[IndLetra]:
+                        fifo.append((IndLetra+1,childs[c].getIndice(),dis))
+                    else:
+                        fifo.append((IndLetra+1,childs[c].getIndice(),dis+1))
+                
     return sol
 
 
