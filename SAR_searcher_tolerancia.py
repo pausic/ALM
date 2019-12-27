@@ -36,14 +36,15 @@ def processArgs():
             if param[2].find("-q=") >= 0:
                 query = param[2].split("=")
                 query = query[1]
-                resolver_consultas(ix, query, stem, False, num)
+                resolver_consultas(ix, query, stem, False, 0)
                 if query.find("%") >= 0:
                     query = query.split("%")
+                    word = query[0]
+                    resolver_consultas(ix, word, stem, True, int(query[1]))
                 elif query.find("@") >= 0:
                     query = query.split("@")
-                word = query[0]
-                num = query[1]    
-                resolver_consultas(ix, word, stem, True, num)
+                    word = query[0]
+                    resolver_consultas(ix, word, stem, True, int(query[1]))
             else:
                 searchCmd(ix, stem)
 
@@ -66,11 +67,14 @@ def searchCmd(ix, stem):
 #Stemming es un parametro booleano para determinar si esta consulta es con stemming
 def resolver_consultas(indice, consulta, stemming, tolerancia, numeroTolerancia):
     if tolerancia == True:
-        sol = busqueda_aprox(consulta, tolerancia, indice[10])
+        sol = levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
         print(sol)
-        print(len(sol))
+        query = []
+        for i in sol:
+            query.append(i[0])
+        busqueda_aprox(query, indice)
         return 0
-    
+ 
     consulta = consulta.lower()
     consulta = " ( ".join(consulta.split("("))
     consulta = " ) ".join(consulta.split(")"))
@@ -114,7 +118,6 @@ def resolver_consultas(indice, consulta, stemming, tolerancia, numeroTolerancia)
 
 def busca_adicional(indice, consulta,steaming):
     resultado = []
-    
     
     if not steaming or '"' in consulta:
         if not":" in consulta:
@@ -178,7 +181,8 @@ def busca_adicional(indice, consulta,steaming):
                 sys.exit()
 
     if len(resultado)>0:
-        resultado= sorted(resultado)    
+        resultado= sorted(resultado) 
+    #print(resultado)   
     return resultado
 
 #busquedas posicionales
@@ -366,9 +370,16 @@ def ordenar_relevancia(pesos, resultado, consulta):
     return (res, aux)
 """
 
-def busqueda_aprox(query, numTolerancia, trie):
-    listaPalabras = levesteinTree_Word_PD(query, trie, numTolerancia)
-    return listaPalabras
+def busqueda_aprox(query, indice):
+    trie = indice[10]
+    resultado = []
+    keys = []
+    for word in query:
+        resultado = indice[0].get(word, [])
+        if len(resultado)>0 :
+            keys.append(list(resultado.keys()))
+    keys = sum(keys, [])
+    mostrar_consultas(indice[1], keys, query,indice,False)
 
 
 def mostrar_consultas(docs, lista, consulta,index,stemming):#, pesos):
