@@ -8,6 +8,7 @@ import os
 import json
 from SAR_library import *
 from nltk.stem import SnowballStemmer
+#import pdb; pdb.set_trace()
 
 #Herramienta para stemming
 stemmer = SnowballStemmer('spanish')
@@ -36,7 +37,6 @@ def processArgs():
             if param[2].find("-q=") >= 0:
                 query = param[2].split("=")
                 query = query[1]
-                resolver_consultas(ix, query, stem, False, 0)
                 if query.find("%") >= 0:
                     query = query.split("%")
                     word = query[0]
@@ -45,6 +45,8 @@ def processArgs():
                     query = query.split("@")
                     word = query[0]
                     resolver_consultas(ix, word, stem, True, int(query[1]))
+                else:
+                    resolver_consultas(ix, query, stem, False, 0)
             else:
                 searchCmd(ix, stem)
 
@@ -68,7 +70,6 @@ def searchCmd(ix, stem):
 def resolver_consultas(indice, consulta, stemming, tolerancia, numeroTolerancia):
     if tolerancia == True:
         sol = levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
-        print(sol)
         query = []
         for i in sol:
             query.append(i[0])
@@ -383,7 +384,6 @@ def busqueda_aprox(query, indice):
 
 
 def mostrar_consultas(docs, lista, consulta,index,stemming):#, pesos):
-    print(lista)
     cont = 0
     print("")
     print("==================================================================")
@@ -411,7 +411,6 @@ def mostrar_consultas(docs, lista, consulta,index,stemming):#, pesos):
             print("Title: ",titular)
             print("Date: ",fecha)
             print("Keywords: ",key)
-            print("Relevancia: ", relevancia)
             print("")
             print(art)
             print("")
