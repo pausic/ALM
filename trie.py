@@ -50,7 +50,8 @@ class Trie:
         return 0
 
     def toString(self):
-        print(self.size, self.finalList)
+        #print(self.size, self.finalList)
+        print(self.size)
 
     
 

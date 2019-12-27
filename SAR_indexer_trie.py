@@ -146,6 +146,8 @@ def fun(doc,index):
                 dats = []
             docid+=1
     print(newid,len(terminos.keys()))
+    print("Trie: ")
+    trie.toString()
     #Guarda también stems
     save_object((terminos,documentos,stems,titles,summary,keywords,dates,title_stems,summary_stems,peso_terminos,trie),index)
 
