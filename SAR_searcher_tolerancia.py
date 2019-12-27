@@ -40,13 +40,13 @@ def processArgs():
                 if query.find("%") >= 0:
                     query = query.split("%")
                     word = query[0]
-                    resolver_consultas(ix, word, stem, True, int(query[1]))
+                    resolver_consultas(ix, word, stem, True, False, int(query[1]))
                 elif query.find("@") >= 0:
                     query = query.split("@")
                     word = query[0]
-                    resolver_consultas(ix, word, stem, True, int(query[1]))
+                    resolver_consultas(ix, word, stem, False, True, int(query[1]))
                 else:
-                    resolver_consultas(ix, query, stem, False, 0)
+                    resolver_consultas(ix, query, stem, False,False, 0)
             else:
                 searchCmd(ix, stem)
 
@@ -64,12 +64,15 @@ def searchCmd(ix, stem):
             sys.exit()
         #Editado para aceptar el parametro -s
         else:
-            resolver_consultas(ix, text, stem, False, 0)
+            resolver_consultas(ix, text, stem, False,False, 0)
 
 #Stemming es un parametro booleano para determinar si esta consulta es con stemming
-def resolver_consultas(indice, consulta, stemming, tolerancia, numeroTolerancia):
-    if tolerancia == True:
-        sol = levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
+def resolver_consultas(indice, consulta, stemming, toleranciaL,toleranciaD, numeroTolerancia):
+    if toleranciaL == True or toleranciaD == True:
+        if toleranciaL == True:
+            sol = levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
+        if toleranciaD == True:
+            sol = dam_levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
         query = []
         for i in sol:
             query.append(i[0])
