@@ -9,6 +9,7 @@ import json
 from SAR_library import *
 from nltk.stem import SnowballStemmer
 #import pdb; pdb.set_trace()
+from time import time
 
 #Herramienta para stemming
 stemmer = SnowballStemmer('spanish')
@@ -56,6 +57,12 @@ def processArgs():
     else:
         syntax()
 
+def Dict_to_tupla(dic):
+    tuplas = []
+    for i in dic.keys():
+        valor = dic.get(i,0)
+        tuplas.append((i, valor))
+    return tuplas
 
 def searchCmd(ix, stem):  
     while True:
@@ -68,15 +75,24 @@ def searchCmd(ix, stem):
 
 #Stemming es un parametro booleano para determinar si esta consulta es con stemming
 def resolver_consultas(indice, consulta, stemming, toleranciaL,toleranciaD, numeroTolerancia):
+    s = ''
     if toleranciaL == True or toleranciaD == True:
         if toleranciaL == True:
+            s = '%'
+            time1 = time()
             sol = levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
+            #sol = levesteinTrie_Word_Ramificacion(consulta,indice[10],numeroTolerancia)
+            time2 = time() - time1
+            #sol = Dict_to_tupla(sol)
+            print(time2)
         if toleranciaD == True:
+            s = '@'
             sol = dam_levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
         query = []
         for i in sol:
             query.append(i[0])
-        busqueda_aprox(query, indice)
+        busqueda = consulta + s + str(numeroTolerancia)
+        busqueda_aprox(query, indice, busqueda)
         return 0
  
     consulta = consulta.lower()
@@ -374,21 +390,16 @@ def ordenar_relevancia(pesos, resultado, consulta):
     return (res, aux)
 """
 
-def busqueda_aprox(query, indice):
+def busqueda_aprox(query, indice, busqueda):
     trie = indice[10]
     resultado = []
     keys = []
     for word in query:
-        print(word)
         resultado = indice[0].get(word, [])
-        print(resultado)
-        print("")
         if len(resultado)>0 :
             keys.append(list(resultado.keys()))
-            print(keys)
     keys = list(set(sum(keys, [])))
-    print(keys)
-    mostrar_consultas(indice[1], keys, query,indice,False)
+    mostrar_consultas(indice[1], keys, busqueda,indice,False)
 
 
 def mostrar_consultas(docs, lista, consulta,index,stemming):#, pesos):
