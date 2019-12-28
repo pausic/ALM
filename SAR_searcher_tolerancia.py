@@ -46,7 +46,7 @@ def processArgs():
                     word = query[0]
                     resolver_consultas(ix, word, stem, False, True, int(query[1]))
                 else:
-                    resolver_consultas(ix, query, stem, False,False, 0)
+                    resolver_consultas(ix, query, stem, False, False, 0)
             else:
                 searchCmd(ix, stem)
 
@@ -379,10 +379,15 @@ def busqueda_aprox(query, indice):
     resultado = []
     keys = []
     for word in query:
+        print(word)
         resultado = indice[0].get(word, [])
+        print(resultado)
+        print("")
         if len(resultado)>0 :
             keys.append(list(resultado.keys()))
-    keys = sum(keys, [])
+            print(keys)
+    keys = list(set(sum(keys, [])))
+    print(keys)
     mostrar_consultas(indice[1], keys, query,indice,False)
 
 

@@ -86,7 +86,7 @@ def fun(doc,index):
                 summarys = clean_frase(suma).lower().split(" ")
                 for i in  range(0,len(summarys)):
                     s = summarys[i]
-                    trie.add_son(s)
+                    #trie.add_son(s)
                     if s is not "":
                     #Stemming 0.1
                         stword = stemmer.stem(s)
@@ -107,7 +107,7 @@ def fun(doc,index):
                 keys = " ".join(keys)
                 keys = keys.split(" ")
                 for t in keys:
-                    trie.add_son(t)
+                    #trie.add_son(t)
                     keywords[t] = keywords.get(t, [])
                     if(newid  not in keywords[t]):
                         keywords[t].append(newid)
@@ -116,7 +116,7 @@ def fun(doc,index):
                 titulos = clean_frase(tit).lower().split(" ")
                 for i in range(0, len(titulos)):
                     t=titulos[i]
-                    trie.add_son(t)
+                    #trie.add_son(t)
                     if t is not "":
                     #Stemming 0.1
                         stword = stemmer.stem(t)
