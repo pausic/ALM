@@ -298,3 +298,45 @@ def levesteinTrie_Word_Ramificacion(p,trie,tolerancia):
     return sol
 
 
+def dam_levesteinTrie_Word_Ramificacion(p,trie,tolerancia):
+    sol = dict()
+    fifo=list()
+    fifo.append((0,0,0)) 
+    #p=" "+p
+    palabra = len(p)
+    while(len(fifo)>0):
+        IndLetra,IndNodo,dis = fifo[0]
+        nodo = trie.getNode(IndNodo)
+        fifo.pop(0)
+        if (dis <= tolerancia):
+            
+            
+            #add solutions 
+            if(IndLetra == palabra and nodo.esFinal() ):
+                if  nodo.getPalabra() not in sol.keys():
+                    sol[nodo.getPalabra()] = dis 
+                else:
+                    sol[nodo.getPalabra()] = min(sol[nodo.getPalabra()], dis)
+                
+            
+            childs = nodo.getSons()
+            #Insercion
+            if (IndLetra<palabra):
+               fifo.append((IndLetra+1,IndNodo,dis+1))
+            
+            #print(nodo.getChr(),nodo.getDepth(),nodo.getIndice(),nodo.getPalabra()," letra :",IndLetra,palabra, " dis ",dis )
+
+            for c in childs.keys():
+                   
+                                   #borrado
+                fifo.append((IndLetra,childs[c].getIndice(),dis+1))
+                    #sustitucion
+                if IndLetra < palabra:
+                    if childs[c].getChr() == p[IndLetra]:
+                        fifo.append((IndLetra+1,childs[c].getIndice(),dis))
+                    elif child[c].getChr() == p[IndLetra-1] && nodo.getChr() == p[IndLetra]:
+                    	fifo.append((IndLetra+1,childs[c].getIndice(),dis+1))
+                    else:
+                        fifo.append((IndLetra+1,childs[c].getIndice(),dis+1))
+                
+    return sol
