@@ -392,18 +392,6 @@ def ordenar_relevancia(pesos, resultado, consulta):
     return (res, aux)
 """
 
-def busqueda_aprox(query, indice, busqueda):
-    trie = indice[10]
-    resultado = []
-    keys = []
-    for word in query:
-        resultado = indice[0].get(word, [])
-        if len(resultado)>0 :
-            keys.append(list(resultado.keys()))
-    keys = list(set(sum(keys, [])))
-    mostrar_consultas(indice[1], keys, busqueda,indice,False)
-
-
 def mostrar_consultas(docs, lista, consulta,index,stemming):#, pesos):
     cont = 0
     print("")

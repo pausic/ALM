@@ -334,8 +334,11 @@ def dam_levesteinTrie_Word_Ramificacion(p,trie,tolerancia):
                 if IndLetra < palabra:
                     if childs[c].getChr() == p[IndLetra]:
                         fifo.append((IndLetra+1,childs[c].getIndice(),dis))
-                    elif childs[c].getChr() == p[IndLetra-1] and nodo.getChr() == p[IndLetra]:
-                    	fifo.append((IndLetra+1,childs[c].getIndice(),dis+1))
+                    elif IndLetra+1 < palabra and childs[c].getChr() == p[IndLetra+1]:
+                        aux = childs[c].getSons()
+                        for cc in aux.keys():
+                            if aux[cc].getChr() == p[IndLetra]:
+                    	        fifo.append((IndLetra+2,aux.get(cc).getIndice(),dis+1))
                     else:
                         fifo.append((IndLetra+1,childs[c].getIndice(),dis+1))
                 
