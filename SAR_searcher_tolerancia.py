@@ -81,15 +81,16 @@ def resolver_consultas(indice, consulta, stemming, toleranciaL,toleranciaD, nume
             s = '%'
             time1 = time()
             sol = levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
-            #sol = levesteinTrie_Word_Ramificacion(consulta,indice[10],numeroTolerancia)
+            #sol = Dict_to_tupla(levesteinTrie_Word_Ramificacion(consulta,indice[10],numeroTolerancia))
             time2 = time() - time1
-            #sol = Dict_to_tupla(sol)
             print(time2)
         if toleranciaD == True:
             s = '@'
+            time1 = time()
             #sol = dam_levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
-            sol = dam_levesteinTrie_Word_Ramificacion(consulta,indice[10],numeroTolerancia)
-            sol = Dict_to_tupla(sol)
+            sol = Dict_to_tupla(dam_levesteinTrie_Word_Ramificacion(consulta,indice[10],numeroTolerancia))
+            time2 = time() - time1
+            print(time2)                                                              
         query = []
         for i in sol:
             query.append(i[0])
