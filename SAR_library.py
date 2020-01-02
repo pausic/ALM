@@ -266,26 +266,20 @@ def levesteinTrie_Word_Ramificacion(p,trie,tolerancia):
         IndLetra,IndNodo,dis = fifo[0]
         nodo = trie.getNode(IndNodo)
         fifo.pop(0)
+        print(len(fifo))
         if (dis <= tolerancia):
-            
-            
             #add solutions 
             if(IndLetra == palabra and nodo.esFinal() ):
                 if  nodo.getPalabra() not in sol.keys():
                     sol[nodo.getPalabra()] = dis 
                 else:
                     sol[nodo.getPalabra()] = min(sol[nodo.getPalabra()], dis)
-                
-            
             childs = nodo.getSons()
             #Insercion
             if (IndLetra<palabra):
                fifo.append((IndLetra+1,IndNodo,dis+1))
-            
             #print(nodo.getChr(),nodo.getDepth(),nodo.getIndice(),nodo.getPalabra()," letra :",IndLetra,palabra, " dis ",dis )
-
             for c in childs.keys():
-                   
                                    #borrado
                 fifo.append((IndLetra,childs[c].getIndice(),dis+1))
                     #sustitucion
@@ -309,25 +303,18 @@ def dam_levesteinTrie_Word_Ramificacion(p,trie,tolerancia):
         nodo = trie.getNode(IndNodo)
         fifo.pop(0)
         if (dis <= tolerancia):
-            
-            
             #add solutions 
             if(IndLetra == palabra and nodo.esFinal() ):
                 if  nodo.getPalabra() not in sol.keys():
                     sol[nodo.getPalabra()] = dis 
                 else:
                     sol[nodo.getPalabra()] = min(sol[nodo.getPalabra()], dis)
-                
-            
             childs = nodo.getSons()
             #Insercion
             if (IndLetra<palabra):
                fifo.append((IndLetra+1,IndNodo,dis+1))
-            
             #print(nodo.getChr(),nodo.getDepth(),nodo.getIndice(),nodo.getPalabra()," letra :",IndLetra,palabra, " dis ",dis )
-
             for c in childs.keys():
-                   
                                    #borrado
                 fifo.append((IndLetra,childs[c].getIndice(),dis+1))
                     #sustitucion
