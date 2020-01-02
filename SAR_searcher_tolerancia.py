@@ -24,7 +24,6 @@ def processArgs():
         index = sys.argv[1]
         ix = load_object(index)
         stem = False
-        num = 0
         if len(sys.argv) == 2:
             searchCmd(ix, stem)
 
@@ -38,16 +37,9 @@ def processArgs():
             if param[2].find("-q=") >= 0:
                 query = param[2].split("=")
                 query = query[1]
-                if query.find("%") >= 0:
-                    query = query.split("%")
-                    word = query[0]
-                    resolver_consultas(ix, word, stem, True, False, int(query[1]))
-                elif query.find("@") >= 0:
-                    query = query.split("@")
-                    word = query[0]
-                    resolver_consultas(ix, word, stem, False, True, int(query[1]))
-                else:
-                    resolver_consultas(ix, query, stem, False, False, 0)
+
+                
+                resolver_consultas(ix, query, stem )
             else:
                 searchCmd(ix, stem)
 
@@ -71,32 +63,10 @@ def searchCmd(ix, stem):
             sys.exit()
         #Editado para aceptar el parametro -s
         else:
-            resolver_consultas(ix, text, stem, False,False, 0)
+            resolver_consultas(ix, text, stem)
 
 #Stemming es un parametro booleano para determinar si esta consulta es con stemming
-def resolver_consultas(indice, consulta, stemming, toleranciaL,toleranciaD, numeroTolerancia):
-    s = ''
-    if toleranciaL == True or toleranciaD == True:
-        if toleranciaL == True:
-            s = '%'
-            time1 = time()
-            sol = levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
-            #sol = Dict_to_tupla(levesteinTrie_Word_Ramificacion(consulta,indice[10],numeroTolerancia))
-            time2 = time() - time1
-            print(time2)
-        if toleranciaD == True:
-            s = '@'
-            time1 = time()
-            #sol = dam_levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
-            sol = Dict_to_tupla(dam_levesteinTrie_Word_Ramificacion(consulta,indice[10],numeroTolerancia))
-            time2 = time() - time1
-            print(time2)                                                              
-        query = []
-        for i in sol:
-            query.append(i[0])
-        busqueda = consulta + s + str(numeroTolerancia)
-        busqueda_aprox(query, indice, busqueda)
-        return 0
+def resolver_consultas(indice, consulta, stemming):
  
     consulta = consulta.lower()
     consulta = " ( ".join(consulta.split("("))
@@ -139,7 +109,36 @@ def resolver_consultas(indice, consulta, stemming, toleranciaL,toleranciaD, nume
     mostrar_consultas(doc_ids,resultado,aux,indice,stemming)#,pesos)
     return 0
 
-def busca_adicional(indice, consulta,steaming):
+def busca_adicional(indice,consulta,steaming):
+    if consulta.find("%") >= 0:
+        consulta = consulta.split("%")
+        num =int (consulta[1])
+        consulta = consulta[0]
+        print(num)
+        time1 = time()
+        sol = levesteinTree_Word_PD(consulta,indice[10],num)
+        time2 = time() - time1
+        print(time2)
+            
+    elif consulta.find("@") >= 0:
+        consulta = consulta.split("@")
+        num =int( consulta[1])
+        consulta = consulta[0]
+        
+        time1 = time()
+        sol = Dict_to_tupla(dam_levesteinTrie_Word_Ramificacion(consulta,indice[10],num))
+        time2 = time() - time1
+        print(time2)    
+    else:
+        return busca_adicional1(indice,consulta,steaming)                                                                 
+    res=[]
+    for i in sol:
+        print(i[0])
+        res=or_op( busca_adicional1(indice,i[0],steaming) , res)
+    return res
+    
+
+def busca_adicional1(indice, consulta,steaming):
     resultado = []
     
     if not steaming or '"' in consulta:
