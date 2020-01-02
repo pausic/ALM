@@ -87,7 +87,9 @@ def resolver_consultas(indice, consulta, stemming, toleranciaL,toleranciaD, nume
             print(time2)
         if toleranciaD == True:
             s = '@'
-            sol = dam_levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
+            #sol = dam_levesteinTree_Word_PD(consulta,indice[10],numeroTolerancia)
+            sol = dam_levesteinTrie_Word_Ramificacion(consulta,indice[10],numeroTolerancia)
+            sol = Dict_to_tupla(sol)
         query = []
         for i in sol:
             query.append(i[0])
