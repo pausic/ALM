@@ -114,26 +114,28 @@ def busca_adicional(indice,consulta,steaming):
         consulta = consulta.split("%")
         num =int (consulta[1])
         consulta = consulta[0]
-        print(num)
         time1 = time()
-        sol = levesteinTree_Word_PD(consulta,indice[10],num)
+        if(num <= 2):
+            sol = Dict_to_tupla(levesteinTrie_Word_Ramificacion(consulta,indice[10],num))
+        else:
+            sol = levesteinTree_Word_PD(consulta,indice[10],num)
         time2 = time() - time1
         print(time2)
-            
     elif consulta.find("@") >= 0:
         consulta = consulta.split("@")
         num =int( consulta[1])
         consulta = consulta[0]
-        
         time1 = time()
-        sol = Dict_to_tupla(dam_levesteinTrie_Word_Ramificacion(consulta,indice[10],num))
+        if(num <= 2):
+            sol = Dict_to_tupla(dam_levesteinTrie_Word_Ramificacion(consulta,indice[10],num))
+        else:
+            sol = dam_levesteinTree_Word_PD(consulta,indice[10],num)
         time2 = time() - time1
         print(time2)    
     else:
         return busca_adicional1(indice,consulta,steaming)                                                                 
     res=[]
     for i in sol:
-        print(i[0])
         res=or_op( busca_adicional1(indice,i[0],steaming) , res)
     return res
     
