@@ -1,4 +1,5 @@
 #import numpy as np
+# Diego Ros y Aitana Villaplana, Pau Sanchez y Javier Garrido
 from node import *
 
 class Trie:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #! -*- encoding: utf-8 -*-
-# Diego Ros y Aitana Villaplana y Pau Sanchez
+# Diego Ros y Aitana Villaplana, Pau Sanchez y Javier Garrido
 
 import re
 import sys

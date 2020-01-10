@@ -1,3 +1,4 @@
+# Diego Ros y Aitana Villaplana, Pau Sanchez y Javier Garrido
 class Node:
 
     def __init__(self, ind, chr="",depth = 0, pre=None, final = False,palabra = None):
